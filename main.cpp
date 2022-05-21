@@ -21,11 +21,30 @@ void putPixel(SDL_Surface * surface, int x, int y) {
     pixels[offset + 2] = 0;
 }
 
+void swap(int * x1, int * y1, int * x2, int * y2) {
+    int tempX, tempY;
+    tempX = *x1;
+    tempY = *y1;
+    *x1 = *x2;
+    *y1 = *y2;
+    *x2 = tempX;
+    *y2 = tempY;
+}
+
 void incLine(SDL_Surface * surface, int x1, int y1, int x2, int y2) {
-    int dx, dy, incE, incNE, d, x, y;
+    int dx, dy, incE, incNE, d, x, y, y_offset = 1;
+
+    if(x1 > x2)
+        swap(&x1, &y1, &x2, &y2);
     
     dx = x2 - x1;
     dy = y2 - y1;
+
+    if(dy < 0) {
+        dy = -dy;
+        y_offset = -1;
+    }
+
     d = 2 * dy - dx;
     incE = 2 * dy;
     incNE = 2 * (dy - dx);
@@ -35,16 +54,12 @@ void incLine(SDL_Surface * surface, int x1, int y1, int x2, int y2) {
     putPixel(surface, x, y);
     while(x < x2) {
         if(d <= 0) {
-            // Choose E 
             d += incE;
             x++;
-            // cout << "Chossing E\nGoing to (" << x << ", " << y << ")" << endl;
         } else {
-            // Choose NE
             d += incNE;
             x++;
-            y++;
-            // cout << "Chossing NE\nGoing to (" << x << ", " << y << ")" << endl;
+            y += y_offset;
         }
         putPixel(surface, x, y);
     }
@@ -52,18 +67,7 @@ void incLine(SDL_Surface * surface, int x1, int y1, int x2, int y2) {
 
 void drawLine(SDL_Surface * surface, int x1, int y1, int x2, int y2) {
     SDL_LockSurface(surface);
-    incLine(surface, x1, (0 - y1), x2, (0 -y2));
-    SDL_UnlockSurface(surface);
-}
-
-void drawSemiCircle(SDL_Surface * surface) {
-    SDL_LockSurface(surface);
-    // for(int y = 300; y <= 600; y++)
-    //     incLine(surface, 300, 300, 600, y);
-
-    for(int y = 600; y <= 900; y++)
-        incLine(surface, 300, (0-300), y, (0-600));
-
+    incLine(surface, x1, y1, x2, y2);
     SDL_UnlockSurface(surface);
 }
 
@@ -91,7 +95,12 @@ int main(int argc, char ** argv) {
             if(event.type == SDL_QUIT)
                 running = false;
             else if(event.button.button == SDL_BUTTON_LEFT) {
-                drawSemiCircle(surface);
+                // drawLine(surface, 0, 0, 256, 256);
+                // drawLine(surface, 256, 256, 0, 0);
+                // drawLine(surface, 0, 512, 256, 0);
+                drawLine(surface, 0, 0, SCREEN_WIDTH-1, SCREEN_HEIGHT-1);
+                drawLine(surface, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, 0);
+                // drawLine(surface, SCREEN_WIDTH-1, SCREEN_HEIGHT-1, 0, 0);
             }
         }
         SDL_UpdateWindowSurface(window);
