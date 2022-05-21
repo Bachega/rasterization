@@ -24,12 +24,7 @@ int main(int argc, char ** argv) {
             if(event.type == SDL_QUIT)
                 running = false;
             else if(event.button.button == SDL_BUTTON_LEFT) {
-                // drawLine(surface, 0, 0, 256, 256);
-                // drawLine(surface, 256, 256, 0, 0);
-                // drawLine(surface, 0, 512, 256, 0);
-                drawLine(surface, 0, 0, SCREEN_WIDTH-1, SCREEN_HEIGHT-1);
-                drawLine(surface, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, 0);
-                // drawLine(surface, SCREEN_WIDTH-1, SCREEN_HEIGHT-1, 0, 0);
+                drawCrosses(surface);
             }
         }
         SDL_UpdateWindowSurface(window);

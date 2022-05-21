@@ -11,3 +11,4 @@ void putPixel(SDL_Surface * surface, int x, int y);
 void incLine(SDL_Surface * surface, int x1, int y1, int x2, int y2);
 void raster(SDL_Surface * surface, int x1, int y1, int x2, int y2);
 void drawLine(SDL_Surface * surface, int x1, int y1, int x2, int y2);
+void drawCrosses(SDL_Surface * surface);

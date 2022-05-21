@@ -85,3 +85,10 @@ void drawLine(SDL_Surface * surface, int x1, int y1, int x2, int y2) {
     raster(surface, x1, y1, x2, y2);
     SDL_UnlockSurface(surface);
 }
+
+void drawCrosses(SDL_Surface * surface) {
+    SDL_LockSurface(surface);
+    raster(surface, 0, 0, SCREEN_WIDTH-1, SCREEN_HEIGHT-1);
+    raster(surface, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, 0);
+    SDL_UnlockSurface(surface);
+}
