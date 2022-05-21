@@ -23,8 +23,8 @@ int main(int argc, char ** argv) {
         while(SDL_PollEvent(&event)) {
             if(event.type == SDL_QUIT)
                 running = false;
-            else if(event.button.button == SDL_BUTTON_LEFT) {
-                drawCrosses(surface);
+            else if(event.button.button == SDL_BUTTON_LEFT) {           
+                paintScreen(surface);
             }
         }
         SDL_UpdateWindowSurface(window);

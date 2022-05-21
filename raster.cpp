@@ -67,7 +67,7 @@ void raster(SDL_Surface * surface, int x1, int y1, int x2, int y2) {
         x2 = temp;
         temp = y1;
         y1 = y2;
-        y2 - temp;
+        y2 = temp;
         dx = x2 - x1;
         dy = y2 - y1;
     }
@@ -88,9 +88,19 @@ void drawLine(SDL_Surface * surface, int x1, int y1, int x2, int y2) {
 
 void drawCrosses(SDL_Surface * surface) {
     SDL_LockSurface(surface);
+    raster(surface, (SCREEN_WIDTH)/2, 0, (SCREEN_WIDTH)/2, SCREEN_HEIGHT-1);
+    raster(surface, 0, (SCREEN_HEIGHT)/2, SCREEN_WIDTH-1, (SCREEN_HEIGHT)/2);
     raster(surface, 0, 0, SCREEN_WIDTH-1, SCREEN_HEIGHT-1);
-
     raster(surface, 0, SCREEN_HEIGHT-1, SCREEN_WIDTH-1, 0);
-    
+    raster(surface, 0, 0, SCREEN_WIDTH-1, SCREEN_HEIGHT-1);
+    SDL_UnlockSurface(surface);
+}
+
+void paintScreen(SDL_Surface * surface) {
+    SDL_LockSurface(surface);
+    for(int x1 = 0, x2 = SCREEN_WIDTH - 1; x1 < SCREEN_WIDTH; x1++, x2--)
+        raster(surface, x1, 0, x2, SCREEN_HEIGHT - 1);
+    for(int y1 = 0, y2 = SCREEN_HEIGHT - 1; y1 < SCREEN_HEIGHT; y1++, y2--)
+        raster(surface, 0, y1, SCREEN_WIDTH - 1, y2);
     SDL_UnlockSurface(surface);
 }
