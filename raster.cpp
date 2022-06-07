@@ -365,7 +365,6 @@ void removeByMaxY(struct bucket ** aet, int y_max)
                 free(prev);
                 prev = curr;
                 *aet = curr;
-                // head = curr;
             }
             else
             {
@@ -385,16 +384,6 @@ void removeByMaxY(struct bucket ** aet, int y_max)
             }
         }
     }
-
-    // if(head != NULL)
-        // *aet = head;
-    
-    // if(y_max == 90)
-    // {
-    //     printf("\n\n\n");
-    //     printAET(*aet);
-    //     system("pause");
-    // }
 }
 
 void printAET(struct bucket * aet)
@@ -465,13 +454,8 @@ void fillPoly(SDL_Surface * surface, Polygon * pol)
                 }
 
                 if(fill)
-                {
-                    // SDL_LockSurface(surface); /* DELETE */
                     raster(surface, x1, i, x2, i);
-                    // SDL_UnlockSurface(surface); /* DELETE */
-                    // SDL_UpdateWindowSurface(window); /* DELETE */
-                }
-                    
+
             }
             
             line = line->next;
@@ -577,7 +561,7 @@ void insertSortedET(Point * p, Point * p_head, ET * edge_table)
         edge_table->table[pos]->p2_y = p_end->y;
         edge_table->table[pos]->numerator = (p_end->x - p->x);
         edge_table->table[pos]->denomenator = (p_end->y - p->y);
-        edge_table->table[pos]->increment = 0; //edge_table->table[pos]->denomenator;
+        edge_table->table[pos]->increment = 0;
         edge_table->table[pos]->next = NULL;
         return;
     }
@@ -599,7 +583,7 @@ void insertSortedET(Point * p, Point * p_head, ET * edge_table)
                 aux->p2_y = p_end->y;
                 aux->numerator = p_end->x - p->x;
                 aux->denomenator = p_end->y - p->y;
-                aux->increment = 0; //aux->denomenator;
+                aux->increment = 0;
                 edge_table->table[pos] = aux;
                 return;
             }
@@ -614,7 +598,7 @@ void insertSortedET(Point * p, Point * p_head, ET * edge_table)
                 prev->next->p2_y = p_end->y;
                 prev->next->numerator = p_end->x - p->x;
                 prev->next->denomenator = p_end->y - p->y;
-                prev->next->increment = 0; //prev->next->denomenator;
+                prev->next->increment = 0;
                 prev->next->next = curr;
             }
             return;
@@ -631,7 +615,7 @@ void insertSortedET(Point * p, Point * p_head, ET * edge_table)
     prev->next->p2_y = p_end->y;
     prev->next->numerator = p_end->x - p->x;
     prev->next->denomenator = p_end->y - p->y;
-    prev->next->increment = 0; //prev->next->denomenator;
+    prev->next->increment = 0;
     prev->next->next = NULL;
 }
 
