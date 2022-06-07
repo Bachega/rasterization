@@ -20,48 +20,51 @@ int main(int argc, char ** argv)
 
     bool running = true;
     SDL_Event event;
-    while(running) {
+    while(running)
+    {
         while(SDL_PollEvent(&event))
         {
             if(event.type == SDL_QUIT)
                 running = false;
             else if(event.button.button == SDL_BUTTON_LEFT)
             {
-                // ET_test();
-                Polygon * p1 = createPoly();
-                Polygon * p2 = createPoly();
-                // insertPoint(p1, 20, 30);
-                // insertPoint(p1, 70, 10);
-                // insertPoint(p1, 130, 50);
-                // insertPoint(p1, 130, 110);
-                // insertPoint(p1, 70, 70);
-                // insertPoint(p1, 20, 90);
-                // fillPoly(surface, p1, window);
+                // Polygon * p1 = createPoly();
+                // Polygon * p2 = createPoly();
+                // insertPoint(p1, 200, 400); // A
+                // insertPoint(p1, 300, 300); // B
+                // insertPoint(p1, 200, 200); // C
+                // insertPoint(p1, 500, 200); // D
+                // insertPoint(p1, 400, 300); // E
+                // insertPoint(p1, 500, 400); // F
+                // insertPoint(p1, 400, 500); // G
+                // insertPoint(p1, 400, 400); // H
+                // fillPoly(surface, p1);
 
-                // insertPoint(p2, 20, 30 + 200);
-                // insertPoint(p2, 70, 10 + 200);
-                // insertPoint(p2, 130, 50 + 200);
-                // insertPoint(p2, 130, 110 + 200);
-                // insertPoint(p2, 70, 70 + 200);
-                // insertPoint(p2, 20, 90 + 200);
+                // insertPoint(p2, 200 + 200, 400 + 200); // A
+                // insertPoint(p2, 300 + 200, 300 + 200); // B
+                // insertPoint(p2, 200 + 200, 200 + 200); // C
+                // insertPoint(p2, 500 + 200, 200 + 200); // D
+                // insertPoint(p2, 400 + 200, 300 + 200); // E
+                // insertPoint(p2, 500 + 200, 400 + 200); // F
+                // insertPoint(p2, 400 + 200, 500 + 200); // G
+                // insertPoint(p2, 400 + 200, 400 + 200); // H
                 // drawPoly(surface, p2);
-                insertPoint(p1, 20, 40); // A
-                insertPoint(p1, 30, 30); // B
-                insertPoint(p1, 20, 20); // C
-                insertPoint(p1, 50, 20); // D
-                insertPoint(p1, 40, 30); // E
-                insertPoint(p1, 50, 40); // F
-                insertPoint(p1, 40, 50); // G
-                insertPoint(p1, 40, 40); // H
-                fillPoly(surface, p1, window);
 
-                // insertPoint(p2, 20, 30 + 200);
-                // insertPoint(p2, 70, 10 + 200);
-                // insertPoint(p2, 130, 50 + 200);
-                // insertPoint(p2, 130, 110 + 200);
-                // insertPoint(p2, 70, 70 + 200);
-                // insertPoint(p2, 20, 90 + 200);
-                // drawPoly(surface, p2);
+                ClipRec * clipRec = createClipRec(200, 200, 400, 400);
+                LineList * l = NULL;
+                insertLine(&l, 50, 600, 600, 50);
+                insertLine(&l, 50, 200, 200, 150);
+                insertLine(&l, 500, 200, 600, 500);
+                insertLine(&l, 10, 200, 100, 200);
+                insertLine(&l, 50, 400, 600, 400);
+                insertLine(&l, 400, 400, 100, 500);
+                insertLine(&l, 295, 200, 600, 50);
+                insertLine(&l, 463, 100, 300, 300);
+                insertLine(&l, 204, 500, 700, 110);
+                insertLine(&l, 300, 200, 300, 495);
+                
+                // drawLineList(surface, l);
+                cohenSutherland(surface, clipRec, l);
             }
         }
         SDL_UpdateWindowSurface(window);

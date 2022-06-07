@@ -170,6 +170,138 @@ void drawPoly(SDL_Surface * surface, Polygon * pol)
     SDL_UnlockSurface(surface);
 }
 
+void insertLine(LineList ** list, double x1, double y1, double x2, double y2)
+{
+    LineList * l = *list, * head = NULL;
+
+    if(l == NULL)
+    {
+        l = (LineList*)malloc(sizeof(LineList));
+        l->x1 = x1;
+        l->y1 = y1;
+        l->x2 = x2;
+        l->y2 = y2;
+        l->next = NULL;
+        *list = l;
+        return;
+    }
+
+    head = (LineList*)malloc(sizeof(LineList));
+    head->x1 = x1;
+    head->y1 = y1;
+    head->x2 = x2;
+    head->y2 = y2;
+    head->next = l;
+    *list = head;
+}
+
+void drawLineList(SDL_Surface * surface, LineList * l)
+{   
+    SDL_LockSurface(surface);
+    while(l != NULL)
+    {
+        raster(surface, (int)l->x1, (int)l->y1, (int)l->x2, (int)l->y2);
+        l = l->next;
+    }
+    SDL_UnlockSurface(surface);
+}
+
+ClipRec * createClipRec(double x_min, double y_min, double x_max, double y_max)
+{
+    ClipRec * rec = (ClipRec*)malloc(sizeof(ClipRec));
+    rec->x_min = x_min;
+    rec->y_min = y_min;
+    rec->x_max = x_max;
+    rec->y_max = y_max;
+    return rec;
+}
+
+int generateCode(double x, double y, ClipRec * rec)
+{
+    int code = INSIDE;
+    if(x < rec->x_min)
+        code |= LEFT;
+    else if(x > rec->x_max)
+        code |= RIGHT;
+    else if(y < rec->y_min)
+        code |= BOTTOM;
+    else if(y > rec->y_max)
+        code |= TOP;
+    return code;
+}
+
+void cohenSutherland(SDL_Surface * surface, ClipRec * rec, LineList * l)
+{
+    int code1, code2, outcode, accept;
+    double x, y;
+    LineList * line = l;
+
+    SDL_LockSurface(surface);
+    while(line)
+    {
+        code1 = generateCode(line->x1, line->y1, rec);
+        code2 = generateCode(line->x2, line->y2, rec);
+        accept = 0;
+        for(;;)
+        {
+            if((code1 == 0) && (code2 == 0))
+            {
+                accept = 1;
+                break;
+            }
+            else if(code1 & code2)
+                break;
+            else
+            {
+                if(code1 != 0)
+                    outcode = code1;
+                else
+                    outcode = code2;
+
+                if(outcode & TOP)
+                {
+                    x = line->x1 + (line->x2 - line->x1) * (rec->y_max - line->y1) / (line->y2 - line->y1);
+                    y = rec->y_max;
+                }
+                else if(outcode & BOTTOM)
+                {
+                    x = line->x1 + (line->x2 - line->x1) * (rec->y_min - line->y1) / (line->y2 - line->y1);
+                    y = rec->y_min;
+                }
+                else if(outcode & RIGHT)
+                {
+                    y = line->y1 + (line->y2 - line->y1) * (rec->x_max - line->x1) / (line->x2 - line->x1);
+                    x = rec->x_max;
+                }
+                else if(outcode & LEFT)
+                {
+                    y = line->y1 + (line->y2 - line->y1) * (rec->x_min - line->x1) / (line->x2 - line->x1);
+                    x = rec->x_min;
+                }
+
+                if(outcode == code1)
+                {
+                    line->x1 = x;
+                    line->y1 = y;
+                    code1 = generateCode(line->x1, line->y1, rec);
+                }
+                else
+                {
+                    line->x2 = x;
+                    line->y2 = y;
+                    code2 = generateCode(line->x2, line->y2, rec);
+                }
+            }
+        }
+        
+        if(accept)
+            raster(surface, (int)line->x1, (int)line->y1, (int)line->x2, (int)line->y2);
+        
+        line = line->next;
+    }
+    SDL_UnlockSurface(surface);
+}
+
 void insertSortedAET(struct bucket ** aet, struct bucket * edge)
 {
     struct bucket * curr = *aet, * prev = NULL, * head = NULL;
@@ -274,7 +406,7 @@ void printAET(struct bucket * aet)
     }
 }
 
-void fillPoly(SDL_Surface * surface, Polygon * pol, SDL_Window * window)
+void fillPoly(SDL_Surface * surface, Polygon * pol)
 {
     int min_y, max_y, x1, x2, y_max1, y_max2, fill, count, sign;
     float num, den;
